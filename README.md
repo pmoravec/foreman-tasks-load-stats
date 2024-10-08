@@ -1,6 +1,8 @@
 # foreman-tasks-load-stats
 Scripts to analyze/blame load of foreman tasking system (dynflow/sidekiq and external tasks).
 
+What makes a foreman task so slow? What is the most frequent or most busy dynflow step within some time? What was the load of sidekiq workers over the time? These scripts will help you finding those answers!
+
 ## Who made my task so slow? Was it sidekiq, pulp or candlepin?
 
 Use `blame_foreman-task_execution.py` script:
