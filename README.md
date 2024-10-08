@@ -8,7 +8,7 @@ Use `blame_foreman-task_execution.py` script:
 ```
 ./blame_foreman-task_execution.py /path/to/unpacked/sosreport/sos_commands/foreman --uuid 221a22c2-af88-433b-8414-ec43e6960800
 687335a3-07e4-4b03-822b-504462fae378 :       TOTAL   pct.    sidewait   pct.    sideexec   pct.    pulpwait   pct.    pulpexec   pct.  candlewait   pct.  candleexec   pct.
-                    relative blame times :    1,834.30 100.0%        9.50   0.5%       45.97   2.5%        1.27   0.1%    1,777.57  96.9%        0.00   0.0%        0.00   0.0%
+                relative blame times :    1,834.30 100.0%        9.50   0.5%       45.97   2.5%        1.27   0.1%    1,777.57  96.9%        0.00   0.0%        0.00   0.0%
 ```
 
 where `uuid` is either foreman task UUID or dynflow plan execution UUID. A path to unpacked sosreport directory with `foreman_tasks_tasks` + `dynflow_steps` + `dynflow_actions` CSV export is required. Columns explanation:
