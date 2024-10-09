@@ -11,38 +11,36 @@ now = datetime.now().replace(tzinfo=utctz).timestamp()
 
 
 def _convert_date_time_to_seconds(ts):
-    try:
-        ret = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S.%f") \
-                      .replace(tzinfo=utctz).timestamp()
-    except ValueError:
-        ret = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S") \
-                      .replace(tzinfo=utctz).timestamp()
-    return ret
-
-
-def _convert_ts_arg_to_seconds(ts):
-    try:
-        ret = float(ts)
-    except ValueError:
-        ret = _convert_date_time_to_seconds(ts)
-    return ret
+    ret = None
+    for fmt in ["%Y-%m-%d %H:%M:%S.%f",
+                "%Y-%m-%d %H:%M:%S",
+                "%Y-%m-%d"]:
+        try:
+            ret = datetime.strptime(ts, fmt) \
+                          .replace(tzinfo=utctz).timestamp()
+        except ValueError:
+            pass
+        if ret:
+            return ret
+    # no string format, so seconds since Epoch
+    return float(ts)
 
 
 parser = argparse.ArgumentParser(description="Sidekiq workers heat stats and "
                                              "graph")
 parser.add_argument("dynflow_steps",
                     help="Input CSV file with dynflow_steps")
-parser.add_argument("--from",
+parser.add_argument("--from", "--since",
                     dest='from_ts',
                     type=str,
                     default="0",
                     help="Consider tasks from this timestamp (seconds since "
-                         "Epoch or '%%Y-%%m-%%d %%H:%%M:%%S' format)")
-parser.add_argument("--to",
+                         "Epoch or '%%Y-%%m-%%d[ %%H:%%M:%%S]' format)")
+parser.add_argument("--to", "--till",
                     type=str,
                     default=str(now),
                     help="Consider tasks to this timestamp (seconds since "
-                         "Epoch or '%%Y-%%m-%%d %%H:%%M:%%S' format)")
+                         "Epoch or '%%Y-%%m-%%d[ %%H:%%M:%%S]' format)")
 parser.add_argument("--items-limit",
                     type=int,
                     default=5,
@@ -54,8 +52,8 @@ parser.add_argument("--show-graph",
                          "Requires matplotlib library")
 
 args = parser.parse_args()
-from_ts = _convert_ts_arg_to_seconds(args.from_ts)
-to_ts = _convert_ts_arg_to_seconds(args.to)
+from_ts = _convert_date_time_to_seconds(args.from_ts)
+to_ts = _convert_date_time_to_seconds(args.to)
 
 if from_ts == 0 and to_ts == now:
     print("Warning: with no --from and --to, the processing time may be long.")
@@ -101,6 +99,11 @@ for line in open(args.dynflow_steps, 'r'):
     intervals.append((start, finish, exectime, label))
     timestamps.add(start)
     timestamps.add(finish)
+
+
+if len(timestamps) == 0:
+    print(f"No data in given time range. Try modifying --from and/or --to.")
+    exit()
 
 # TODO: add progress bar e.g. from
 # https://github.com/pavlinamv/rails-load-stats-py/blob/main/progress_bar.py
