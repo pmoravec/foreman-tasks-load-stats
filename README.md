@@ -1,7 +1,9 @@
 # foreman-tasks-load-stats
 Scripts to analyze/blame load of foreman tasking system (dynflow/sidekiq and external tasks).
 
-What makes a foreman task so slow? What is the most frequent or most busy dynflow step within some time? What was the load of sidekiq workers over the time? These scripts analyzing data from a [sosreport](https://github.com/sosreport/sos/) will help you finding those answers!
+What makes a foreman task so slow? What is the most frequent or most busy dynflow step within some time? What was the load of sidekiq workers over the time? Were sidekiq workers polling external tasks frequently enough?
+
+These scripts analyzing data from a [sosreport](https://github.com/sosreport/sos/) will help you finding those answers!
 
 ## Who made my task so slow? Was it sidekiq, pulp or candlepin?
 
@@ -81,3 +83,20 @@ The graph shows peak times of concurrently running dynflow steps over the time, 
 Also, `dynflow_steps.sidekiq_load.csv` is generated with csv data from the graph - valuable if you need to run some further analysis over the data from the graph.
 
 **Warning: all times are in GMT!** Since the data in all inputs are in GMT.
+
+## Were sidekiq workers polling external pulp tasks frequently enough?
+
+When sidekiq workers are under a heavy load, they can miss a polling attempt or forget polling a pulp task completely. That delays task execution or even makes a task stuck. `check_dynflow_polling.py` is a simple script that warns about this.
+
+The script takes sosreport directory as an argument, and fetches three basic logfiles for frequency of `"GET /pulp/api/v3/tasks/../` requests. It honors `foreman_tasks_polling_multiplier` setting stored by sosreport, if present - or this multiplier value can be set or modified via command line option. The script can check a single logfile instead of sosreport directory as well. Example output:
+
+```
+Processing file sosreport-my-satellite-2023-08-30-haifamh/var/log/httpd/foreman-ssl_access_ssl.log..
+Task '49edb99b-f18f-4fb3-8401-f974e96bbf51' polled at '29/Aug/2023:04:07:53' and then at '29/Aug/2023:04:08:12', delay 19s is bigger than maximum 18s.
+..
+Task 'fd099e8d-7c90-49ad-b69a-405de3eb0f30' polled at '30/Aug/2023:04:13:53' and then at '30/Aug/2023:04:14:49', delay 56s is bigger than maximum 18s.
+
+Processing file sosreport-my-satellite-2023-08-30-haifamh/var/log/messages..
+..
+
+```
