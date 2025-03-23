@@ -141,19 +141,19 @@ for start, finish, exectime, label in intervals:
 labels_list = [(label[1]['count'], label[1]['exectime'], label[0])
                for label in labels.items()]
 
-s = f"Top {args.items_limit} dynflow step labels per count:"
+s = f"Top {args.items_limit} dynflow step labels per execution time:"
 print(s)
 print("-"*len(s))
-labels_list.sort(key=lambda x: x[0], reverse=True)
+labels_list.sort(key=lambda x: x[1], reverse=True)
 print(f"{'steps':<8}{'exec.time':<10}label")
 for steps, exectime, label in labels_list[0:args.items_limit]:
     print(f"{steps:<8}{exectime:<10,.2f}{label}")
 print()
 
-s = f"Top {args.items_limit} dynflow step labels per execution time:"
+s = f"Top {args.items_limit} dynflow step labels per count:"
 print(s)
 print("-"*len(s))
-labels_list.sort(key=lambda x: x[1], reverse=True)
+labels_list.sort(key=lambda x: x[0], reverse=True)
 print(f"{'steps':<8}{'exec.time':<10}label")
 for steps, exectime, label in labels_list[0:args.items_limit]:
     print(f"{steps:<8}{exectime:<10,.2f}{label}")
