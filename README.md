@@ -47,15 +47,6 @@ Use `heat_stats_sidekiq_workers.py` script:
 Processing '/path/to/unpacked/sosreport/sos_commands/foreman/dynflow_steps'..
 Summarizing input data..
 
-Top 5 dynflow step labels per count:
-------------------------------------
-steps   exec.time label
-1222    266.63    Actions::Katello::Applicability::Hosts::BulkGenerate
-682     1,004.44  Actions::Katello::Repository::IndexContent
-682     633.12    Actions::Pulp3::Repository::SaveDistributionReferences
-682     1,079.98  Actions::Pulp3::Repository::RefreshDistribution
-679     219.27    Actions::Pulp3::Orchestration::Repository::GenerateMetadata
-
 Top 5 dynflow step labels per execution time:
 ---------------------------------------------
 steps   exec.time label
@@ -64,6 +55,15 @@ steps   exec.time label
 48      5,908.29  Actions::BulkAction
 192     5,511.68  Actions::Katello::CapsuleContent::Sync
 384     2,675.58  Actions::Pulp3::CapsuleContent::Sync
+
+Top 5 dynflow step labels per count:
+------------------------------------
+steps   exec.time label
+1222    266.63    Actions::Katello::Applicability::Hosts::BulkGenerate
+682     1,004.44  Actions::Katello::Repository::IndexContent
+682     633.12    Actions::Pulp3::Repository::SaveDistributionReferences
+682     1,079.98  Actions::Pulp3::Repository::RefreshDistribution
+679     219.27    Actions::Pulp3::Orchestration::Repository::GenerateMetadata
 
 Intervals with distinct sidekiq load
 ------------------------------------
