@@ -201,10 +201,11 @@ with open(dynflow_actions_fname, newline='') as _file:
         # pulp tasks
         if 'pulp_tasks' in data:
             for task in data['pulp_tasks']:
-                process_external_task(step_id, 'pulp',
-                                      task['pulp_created'][:23],
-                                      task['started_at'][:23],
-                                      task['finished_at'][:23])
+                if task.keys() >= {"pulp_created", "started_at", "finished_at"}:
+                    process_external_task(step_id, 'pulp',
+                                          task['pulp_created'][:23],
+                                          task['started_at'][:23],
+                                          task['finished_at'][:23])
         # pulp task groups
         if 'task_groups' in data and data['task_groups']:
             for group in data['task_groups']:
