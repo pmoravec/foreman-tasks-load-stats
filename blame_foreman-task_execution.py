@@ -211,19 +211,20 @@ with open(dynflow_actions_fname, newline='') as _file:
             for group in data['task_groups']:
                 for task in group["tasks"]:
                     if task.keys() >= {"pulp_created", "started_at", "finished_at"}:
-                    process_external_task(step_id, 'pulp',
-                                          task['pulp_created'][:23],
-                                          task['started_at'][:23],
-                                          task['finished_at'][:23])
+                        process_external_task(step_id, 'pulp',
+                                              task['pulp_created'][:23],
+                                              task['started_at'][:23],
+                                              task['finished_at'][:23])
         # candlepin tasks
         if 'task' in data:
             task = data['task']
             # time format is '2024-10-02T12:18:04+0000' so strip the trailing
             # timezone
-            process_external_task(step_id, 'candle',
-                                  task['created'].split('+')[0],
-                                  task['startTime'].split('+')[0],
-                                  task['endTime'].split('+')[0])
+            if task.keys() >= {'created', 'startTime', 'endTime'}:
+                process_external_task(step_id, 'candle',
+                                      task['created'].split('+')[0],
+                                      task['startTime'].split('+')[0],
+                                      task['endTime'].split('+')[0])
 
 # for each action_intervals[step_id], distribute the execution time among
 # partial intervals and store the final value in final intervals.
